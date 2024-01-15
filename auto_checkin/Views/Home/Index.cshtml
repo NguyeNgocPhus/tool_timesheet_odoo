@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model UserModel
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+
+
+    <div class="common">
+        <label for="SessionId">Nhập session_id</label>
+        <input type="text" name="SessionId" class="SessionId" />
+        <button type="button" class="getUser">Get User</button>
+        <div class="select_user">
+            <label>Chọn user</label>
+            <select class="users">
+            </select>
+        </div>
+        <div class="select_project">
+            <label>Chọn project</label>
+            <select class="projects">
+            </select>
+        </div>
+        <div class="select_task">
+            <label>Chọn task</label>
+            <select class="tasks">
+            </select>
+        </div>
+
+        <div>
+            <label>Nhập description</label>
+            <input type="text" name="description" class="description" />
+        </div>
+        <div>
+            <label>Chọn tháng</label>
+            <select class="months">
+               
+            </select>
+        </div>
+        <button class="submit_timesheet">OKKKKKKKKK</button>
+        <div class="create_success"></div>
+    </div>
+
+
+</div>
+<script>
+    $(function () {
+        for (let i = 1; i <= 12;i++){
+            $('.months').append($('<option>', {
+                value: i,
+                text: `Tháng ${i}`
+            }));
+        }
+
+
+        $('.select_user').hide();
+        $('.select_project').hide();
+        $('.select_task').hide();
+        let unit_amount = 8.5;
+        let employee_id;
+        let project_id;
+        let task_id;
+        let month = 1;
+        $('.submit_timesheet').click(function () {
+            let description = $('.description').val();
+            let sessionId = $('.SessionId').val();
+            console.log("description", description);
+            console.log("employee_id", employee_id);
+            console.log("project_id", project_id);
+            console.log("task_id", task_id);
+
+            $.ajax({
+                type: 'GET',
+                url: `/home/create?sessionId=${sessionId}&projectId=${project_id}&employeeId=${employee_id}&taskId=${task_id}&description=${description}&month=${month}`,
+                success: function (data, status, xhr) {
+                    $('.create_success').html("successss");
+                }
+            });
+            
+        });
+        $('.getUser').click(function () {
+
+            let sessionId = $('.SessionId').val();
+
+            $.ajax({
+                type: 'GET',
+                url: `/home/user?sessionId=${sessionId}`,
+                success: function (data, status, xhr) {
+                    //console.log("du lieu nam o day");
+                    console.log('data: ', data);
+                    $('.select_user').show();
+                    $.each(data, function (i, item) {
+                        if (i === 0) {
+                            employee_id = item.id;
+                        }
+                        $('.users').append($('<option>', {
+                            value: item.id,
+                            text: item.name
+                        }));
+                    });
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                url: `/home/projects?sessionId=${sessionId}`,
+                success: function (data, status, xhr) {
+                    //console.log("du lieu nam o day");
+                    console.log('data: ', data);
+                       
+                    $('.select_project').show();
+                    $.each(data, function (i, item) {
+                        if (i === 0) {
+                            task_id = item.id;
+                        }
+                        $('.projects').append($('<option>', {
+                            value: item.id,
+                            text: item.name
+                        }));
+                    });
+                }
+            });
+        });
+        $('.projects').on('change', function () {
+            project_id = this.value;
+            let sessionId = $('.SessionId').val();
+            $.ajax({
+                type: 'GET',
+                url: `/home/tasks?sessionId=${sessionId}&projectId=${project_id}`,
+                success: function (data, status, xhr) {
+                    //console.log("du lieu nam o day");
+                    console.log('data: ', data);
+                    $('.select_task').show();
+                    $.each(data, function (i, item) {
+                        if (i === 0) {
+                            task_id = item.id;
+                        }
+                        $('.tasks').append($('<option>', {
+                            value: item.id,
+                            text: item.name
+                        }));
+                    });
+                }
+            });
+        });
+        $('.users').on('change', function () {
+            employee_id = this.value;
+            console.log("employee_id", employee_id)
+        });
+        $('.tasks').on('change', function () {
+            task_id = this.value;
+        });
+        $('.months').on('change', function () {
+            month = this.value;
+        });
+
+
+
+
+    });
+
+</script>
+<style>
+    .select_user {
+        display: none;
+    }
+
+    .common {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+    }
+</style>
