@@ -2,86 +2,124 @@
     ViewData["Title"] = "Home Page";
 }
 
+
 @model UserModel
 
-<div class="text-center">
+<div>
     <h1 class="display-4">Welcome</h1>
-
 
     <div class="common">
         <label for="SessionId">Nhập session_id</label>
         <input type="text" name="SessionId" class="SessionId" />
-        <button type="button" class="getUser">Get User</button>
-        <div class="select_user">
+        <button type="button" class="getUser">Lấy thông tin timesheet  🙇‍♂️ 🙇‍♂️ 🙇‍♂️</button>
+
+        
+        <div class="info_timesheet select_user">
+            <h4><b>Thông tin timesheet</b></h4>
             <label>Chọn user</label>
             <select class="users">
             </select>
         </div>
-        <div class="select_project">
+        <div class="info_timesheet select_project">
             <label>Chọn project</label>
             <select class="projects">
             </select>
         </div>
-        <div class="select_task">
+        <div class="info_timesheet select_task">
             <label>Chọn task</label>
             <select class="tasks">
             </select>
         </div>
 
-        <div>
+        <div class="info_timesheet">
             <label>Nhập description</label>
             <input type="text" name="description" class="description" />
         </div>
-        <div>
+        <div class="info_timesheet">
             <label>Chọn tháng</label>
             <select class="months">
-               
             </select>
         </div>
-        <button class="submit_timesheet">OKKKKKKKKK</button>
+
+        <button class="info_timesheet submit_timesheet">👻 Tạo timesheet cho tháng 1👻 </button>
+        <div class="tab_loaded">
+            <div class="loaded"></div>
+        </div>
         <div class="create_success"></div>
     </div>
 
 
 </div>
-<script>
+<script type="text/javascript">
     $(function () {
-        for (let i = 1; i <= 12;i++){
+
+        for (let i = 1; i <= 12; i++) {
             $('.months').append($('<option>', {
                 value: i,
                 text: `Tháng ${i}`
             }));
         }
+        $('.months').on('change', function () {
+       
+            $('.submit_timesheet').html(` 👻 Tạo timesheet cho tháng ${this.value}👻 `);
 
+        });
 
-        $('.select_user').hide();
-        $('.select_project').hide();
-        $('.select_task').hide();
+        $('.info_timesheet').hide();
+        $('.tab_loaded').hide();
+
         let unit_amount = 8.5;
         let employee_id;
+        let employeeName;
         let project_id;
+        let projectName;
         let task_id;
         let month = 1;
         $('.submit_timesheet').click(function () {
+            $('.tab_loaded').show();
             let description = $('.description').val();
             let sessionId = $('.SessionId').val();
-            console.log("description", description);
-            console.log("employee_id", employee_id);
-            console.log("project_id", project_id);
-            console.log("task_id", task_id);
 
+            let data = {
+                sessionId: sessionId,
+                employeeId: employee_id,
+                employeeName: employeeName,
+                projectId: project_id,
+                projectName: projectName,
+                taskId: task_id,
+                description: description,
+                month: month
+            };
+            console.log("data: ", data);
             $.ajax({
-                type: 'GET',
-                url: `/home/create?sessionId=${sessionId}&projectId=${project_id}&employeeId=${employee_id}&taskId=${task_id}&description=${description}&month=${month}`,
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: `/home/create`,
                 success: function (data, status, xhr) {
-                    $('.create_success').html("successss");
+                    $('.tab_loaded').hide();
+                    $('.create_success').html(`
+                        <div>
+                           ${data.successRecord} bản ghi được thêm thành công và ${data.errorRecord} bản ghi lỗi
+                        </div>
+                        <div>
+                           truy cập "https://erp.thgdx.vn/" để kiểm tra dữ liệu
+                        </div>
+                                  <div>
+                               cảm ơn rất nhiều vì đã sử dụng phần mềm
+                            </div>
+                    `);
                 }
             });
-            
+
         });
         $('.getUser').click(function () {
 
             let sessionId = $('.SessionId').val();
+            // configuration websocket
+            WebSocketHandle(sessionId);
+
 
             $.ajax({
                 type: 'GET',
@@ -89,9 +127,11 @@
                 success: function (data, status, xhr) {
                     //console.log("du lieu nam o day");
                     console.log('data: ', data);
-                    $('.select_user').show();
+                    $('.info_timesheet').show();
+                    $('.users').select2();
                     $.each(data, function (i, item) {
                         if (i === 0) {
+                            employeeName = item.name;
                             employee_id = item.id;
                         }
                         $('.users').append($('<option>', {
@@ -101,17 +141,20 @@
                     });
                 }
             });
+
             $.ajax({
                 type: 'GET',
                 url: `/home/projects?sessionId=${sessionId}`,
                 success: function (data, status, xhr) {
                     //console.log("du lieu nam o day");
                     console.log('data: ', data);
-                       
+
                     $('.select_project').show();
+                    $('.projects').select2();
                     $.each(data, function (i, item) {
                         if (i === 0) {
-                            task_id = item.id;
+                            projectName = item.name;
+                            project_id = item.id;
                         }
                         $('.projects').append($('<option>', {
                             value: item.id,
@@ -123,6 +166,7 @@
         });
         $('.projects').on('change', function () {
             project_id = this.value;
+            projectName = $('.projects').find(":selected").text();
             let sessionId = $('.SessionId').val();
             $.ajax({
                 type: 'GET',
@@ -131,6 +175,8 @@
                     //console.log("du lieu nam o day");
                     console.log('data: ', data);
                     $('.select_task').show();
+                    $('.tasks').select2();
+                    $('.tasks').html("");
                     $.each(data, function (i, item) {
                         if (i === 0) {
                             task_id = item.id;
@@ -145,7 +191,8 @@
         });
         $('.users').on('change', function () {
             employee_id = this.value;
-            console.log("employee_id", employee_id)
+            employeeName = $('.users').find(":selected").text();
+            console.log("employee_id", employeeName)
         });
         $('.tasks').on('change', function () {
             task_id = this.value;
@@ -158,16 +205,77 @@
 
 
     });
+    function WebSocketHandle(session_id) {
+        // enable websocket
+        let scheme = document.location.protocol === "https:" ? "wss" : "ws";
+        let port = document.location.port ? (":" + document.location.port) : "";
+
+        let webSocketUrl = scheme + "://" + document.location.hostname + port + "/ws";
+        console.log("webSocketUrl", webSocketUrl);
+        let socket = new WebSocket(webSocketUrl);
+
+        socket.onopen = function (event) {
+            console.log("onopen");
+            socket.send(JSON.stringify({ "command": "subscribe", "identifier": session_id }))
+        };
+        socket.onclose = function (event) {
+            console.log("onclose");
+        };
+        socket.onerror = function (event) {
+            console.log("onerror ");
+        };
+        socket.onmessage = function (event) {
+            let message = JSON.parse(event.data);
+            if (message.command == "loaded") {
+                console.log("onmessage", message);
+                $('.loaded').css("width", `${message.data}%`);
+            }
+
+        };
+    }
 
 </script>
 <style>
+    .tab_loaded {
+        margin-top: 10px;
+        width: 100%;
+        height: 10px;
+        border: 1px solid black;
+    }
+
+    .loaded {
+        background-color: blue;
+        height: 100%;
+        width: 0px;
+    }
+
     .select_user {
         display: none;
+    }
+
+    .info_timesheet {
+        width: 100%;
+        margin-bottom: 3px;
+        display:flex;
+        flex-direction:column;
+        justify-content:start;
     }
 
     .common {
         display: flex;
         flex-direction: column;
         width: 300px;
+    }
+
+    .description {
+        width: 100%;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    label {
+        font-weight: bold;
     }
 </style>

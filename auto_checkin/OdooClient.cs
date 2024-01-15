@@ -5,14 +5,14 @@ using System.Xml.Linq;
 
 namespace auto_checkin
 {
-    public class ZaloClient : ZaloBaseClient
+    public class OdooClient : OdooBaseClient
     {
 
 
         string access_token = "";
         string session_id = "";
 
-        public ZaloClient(string access_token = "", string session_id = "")
+        public OdooClient(string access_token = "", string session_id = "")
         {
             this.Access_token = access_token;
             this.Session_id = session_id;

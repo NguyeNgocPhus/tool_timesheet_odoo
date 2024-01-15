@@ -1,7 +1,6 @@
 ﻿using auto_checkin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace auto_checkin.Controllers
@@ -9,27 +8,30 @@ namespace auto_checkin.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private ZaloClient _zaloClient;
+        private readonly WebsocketHandler _ws;
+        private OdooClient _odooClient;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, WebsocketHandler ws)
         {
             _logger = logger;
+            _ws = ws;
         }
 
         public async Task<IActionResult> Index()
         {
-          
+
             return View();
         }
         public async Task<IActionResult> User([FromQuery] string sessionId)
         {
             try
             {
-                _zaloClient = new ZaloClient(session_id: sessionId);
+                _logger.LogInformation("Get user by session_id", sessionId);
+                _odooClient = new OdooClient(session_id: sessionId);
 
-                var rawUser = JsonConvert.DeserializeObject<User>(_zaloClient.getUserDetail().ToString());
-                var jsonResponse = new List<object>(); 
-                foreach(var user in rawUser.result)
+                var rawUser = JsonConvert.DeserializeObject<User>(_odooClient.getUserDetail().ToString());
+                var jsonResponse = new List<object>();
+                foreach (var user in rawUser.result)
                 {
                     jsonResponse.Add(new
                     {
@@ -40,19 +42,20 @@ namespace auto_checkin.Controllers
 
                 return Json(jsonResponse);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw;
             }
-           
+
         }
         public async Task<IActionResult> Projects([FromQuery] string sessionId)
         {
             try
             {
-                _zaloClient = new ZaloClient(session_id: sessionId);
+                _odooClient = new OdooClient(session_id: sessionId);
 
-                var rawProjects = JsonConvert.DeserializeObject<User>(_zaloClient.getProjects().ToString());
+                var rawProjects = JsonConvert.DeserializeObject<User>(_odooClient.getProjects().ToString());
                 var jsonResponse = new List<object>();
                 foreach (var user in rawProjects.result)
                 {
@@ -65,8 +68,9 @@ namespace auto_checkin.Controllers
 
                 return Json(jsonResponse);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw;
             }
 
@@ -75,9 +79,9 @@ namespace auto_checkin.Controllers
         {
             try
             {
-                _zaloClient = new ZaloClient(session_id: sessionId);
+                _odooClient = new OdooClient(session_id: sessionId);
 
-                var rawProjects = JsonConvert.DeserializeObject<User>(_zaloClient.getTasks(projectId).ToString());
+                var rawProjects = JsonConvert.DeserializeObject<User>(_odooClient.getTasks(projectId).ToString());
                 var jsonResponse = new List<object>();
                 foreach (var user in rawProjects.result)
                 {
@@ -90,43 +94,88 @@ namespace auto_checkin.Controllers
 
                 return Json(jsonResponse);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw;
             }
 
         }
-        public async Task<IActionResult> Create([FromQuery] string sessionId, [FromQuery] int projectId, [FromQuery] int employeeId, [FromQuery] int taskId, [FromQuery] string description, [FromQuery] string month)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateTimesheetRequest request)
         {
-            try
+
+            var dayNumber = DateTime.DaysInMonth(DateTime.Now.Year, request.month);
+            var successRecord = 0;
+            var errorRecord = 0;
+            var days = new List<string>();
+            for (int i = 1; i <= dayNumber; i++)
             {
-                string ngayCanKiemTra = "2/1/2024";
-                // Chuyển đổi chuỗi ngày thành đối tượng DateTime
-                DateTime ngay = DateTime.ParseExact(ngayCanKiemTra, "d/M/yyyy", null);
-                // Lấy thông tin về thứ của ngày
-                DayOfWeek thu = ngay.DayOfWeek;
+                string day = string.Format("{0}/{1}/{2}", i, request.month, DateTime.Now.Year);
+                DateTime ngay = DateTime.ParseExact(day, "d/M/yyyy", null);
 
-                _zaloClient = new ZaloClient(session_id: sessionId);
-                var data = _zaloClient.createTimeSheet(projectId, employeeId, taskId, description, "2024-02-11");
-                var rawProjects = JsonConvert.DeserializeObject<CreateTimesheetResponse>(data.ToString());
+                if (ngay.DayOfWeek == DayOfWeek.Sunday || ngay.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    continue;
+                }
+                days.Add(day);
 
-                return Json(rawProjects);
+
             }
-            catch (Exception)
+            var index = 1;
+            foreach (var day in days)
             {
-                throw;
+                
+                try
+                {
+                    var dayFormat = string.Format("{0}-{1}-{2}", DateTime.Now.Year, request.month, day.Split("/")[0]);
+                    _odooClient = new OdooClient(session_id: request.sessionId);
+                    var data = _odooClient.createTimeSheet(request.projectId, request.employeeId, request.taskId, request.description, dayFormat);
+                    var rawProjects = JsonConvert.DeserializeObject<CreateTimesheetResponse>(data.ToString());
+                    if (rawProjects != null && rawProjects.result != null && rawProjects.error == null)
+                    {
+                        _logger.LogDebug($"👉 👉 👉 {request.employeeName} ADD TIMESHEET. DAY: {day}, PROJECT : {request.projectName}, DESCRIPTION: {request.description}");
+                        successRecord++;
+                        var loaded = (index * 100) / days.Count;
+                        await _ws.SendMessageToClient(request.sessionId, new WsClientMessage
+                        {
+                            command = "loaded",
+                            data = loaded
+                        });
+                        index += 1;
+                    }
+                    else
+                    {
+                        errorRecord++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    errorRecord++;
+                }
             }
 
+
+            _logger.LogInformation($"🙌 🙌 {successRecord} RECORD SUCCESS, {errorRecord} RECORD ERROR");
+            return Json(new
+            {
+                successRecord,
+                errorRecord
+            });
         }
-        public IActionResult Privacy()
+        [HttpPost]
+        public async Task<IActionResult> TestWs([FromQuery] string session_id, [FromQuery] int loaded)
         {
-            return View();
+
+            await _ws.SendMessageToClient(session_id, new WsClientMessage
+            {
+                command = "TestWs",
+                data = loaded
+            });
+            return Ok("ok");
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+
     }
 }

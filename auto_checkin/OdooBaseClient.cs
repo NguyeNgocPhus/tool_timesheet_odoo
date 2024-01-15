@@ -5,7 +5,7 @@ using System.Web;
 
 namespace auto_checkin
 {
-    public class ZaloBaseClient
+    public class OdooBaseClient
     {
         protected string sendHttpGetRequest(string endpoint, Dictionary<string, dynamic> param, Dictionary<string, string> header)
         {
