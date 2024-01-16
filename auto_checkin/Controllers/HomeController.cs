@@ -105,32 +105,52 @@ namespace auto_checkin.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTimesheetRequest request)
         {
 
-            var dayNumber = DateTime.DaysInMonth(DateTime.Now.Year, request.month);
+           
             var successRecord = 0;
             var errorRecord = 0;
             var days = new List<string>();
-            for (int i = 1; i <= dayNumber; i++)
+            if(request.type == 0)
             {
-                string day = string.Format("{0}/{1}/{2}", i, request.month, DateTime.Now.Year);
-                DateTime ngay = DateTime.ParseExact(day, "d/M/yyyy", null);
-
-                if (ngay.DayOfWeek == DayOfWeek.Sunday || ngay.DayOfWeek == DayOfWeek.Saturday)
+                var dayNumber = DateTime.DaysInMonth(DateTime.Now.Year, int.Parse(request.dateTimesheet));
+                for (int i = 1; i <= dayNumber; i++)
                 {
-                    continue;
+                    string day = string.Format("{0}/{1}/{2}", i, request.dateTimesheet, DateTime.Now.Year);
+                    DateTime ngay = DateTime.ParseExact(day, "d/M/yyyy", null);
+
+                    if (ngay.DayOfWeek == DayOfWeek.Sunday || ngay.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        continue;
+                    }
+                    var dayFormat = string.Format("{0}-{1}-{2}", DateTime.Now.Year, request.dateTimesheet, day.Split("/")[0]);
+                    days.Add(dayFormat);
                 }
-                days.Add(day);
-
-
             }
+            else if(request.type == 1)
+            {
+                var date = request.dateTimesheet.Split("-");
+                var from = date[0];
+                var to = date[1];
+                var fromDate = DateTime.Parse(from);
+                var toDate = DateTime.Parse(to);
+                foreach (DateTime dateTime in fromDate.ListAllDates(toDate))
+                {
+                    if (dateTime.DayOfWeek == DayOfWeek.Sunday || dateTime.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        continue;
+                    }
+                    //var dayFormat = string.Format("{0}-{1}-{2}", DateTime.Now.Year, request.dateTimesheet, day.Split("/")[0]);
+                    days.Add(dateTime.ToString("yyy-MM-dd"));
+                }
+            }
+            
             var index = 1;
             foreach (var day in days)
             {
-                
+
                 try
                 {
-                    var dayFormat = string.Format("{0}-{1}-{2}", DateTime.Now.Year, request.month, day.Split("/")[0]);
                     _odooClient = new OdooClient(session_id: request.sessionId);
-                    var data = _odooClient.createTimeSheet(request.projectId, request.employeeId, request.taskId, request.description, dayFormat);
+                    var data = _odooClient.createTimeSheet(request.projectId, request.employeeId, request.taskId, request.description, day);
                     var rawProjects = JsonConvert.DeserializeObject<CreateTimesheetResponse>(data.ToString());
                     if (rawProjects != null && rawProjects.result != null && rawProjects.error == null)
                     {
@@ -151,7 +171,7 @@ namespace auto_checkin.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.Message);
+                    _logger.LogError(ex.ToString());
                     errorRecord++;
                 }
             }

@@ -36,6 +36,28 @@
             <input type="text" name="description" class="description" />
         </div>
         <div class="info_timesheet">
+            <div class="checkbox_timesheet">
+                <div class="form-check">
+                    <input class="form-check-input btn_full_day_of_month" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Full day of month
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input btn_range_day" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Range day
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        <div class="info_timesheet range_day">
+            <label>Chọn khoảng ngày (MM/DD/YYY)</label>
+            <input type="text" class="dayofmonth">
+        </div>
+
+        <div class="info_timesheet full_day_of_month">
             <label>Chọn tháng</label>
             <select class="months">
             </select>
@@ -69,7 +91,7 @@
 
         $('.info_timesheet').hide();
         $('.tab_loaded').hide();
-
+        let type = 0;
         let unit_amount = 8.5;
         let employee_id;
         let employeeName;
@@ -77,14 +99,18 @@
         let projectName;
         let task_id;
         let month = 1;
+        let rangeDay = "";
         // create timesheet
         $('.submit_timesheet').click(function () {
             $('.tab_loaded').show();
             $('.create_success').html("");
+           
             let description = $('.description').val();
             let sessionId = $('.SessionId').val();
+            let rangeDay = $('.dayofmonth').val();
 
             let data = {
+                type: type,
                 sessionId: sessionId,
                 employeeId: employee_id,
                 employeeName: employeeName,
@@ -92,7 +118,7 @@
                 projectName: projectName,
                 taskId: task_id,
                 description: description,
-                month: month
+                dateTimesheet: type === 0 ? month : rangeDay
             };
             console.log("data: ", data);
             $.ajax({
@@ -104,16 +130,16 @@
                 success: function (data, status, xhr) {
                     $('.tab_loaded').hide();
                     $('.create_success').html(`
-                            <div>
-                               ${data.successRecord} bản ghi được thêm thành công và ${data.errorRecord} bản ghi lỗi
-                            </div>
-                            <div>
-                               truy cập "https://erp.thgdx.vn/" để kiểm tra dữ liệu
-                            </div>
-                                      <div>
-                                   cảm ơn rất nhiều vì đã sử dụng phần mềm
+                                <div>
+                                   ${data.successRecord} bản ghi được thêm thành công và ${data.errorRecord} bản ghi lỗi
                                 </div>
-                        `);
+                                <div>
+                                   truy cập "https://erp.thgdx.vn/" để kiểm tra dữ liệu
+                                </div>
+                                          <div>
+                                       cảm ơn rất nhiều vì đã sử dụng phần mềm
+                                    </div>
+                            `);
                 }
             });
 
@@ -139,6 +165,33 @@
                     //console.log("du lieu nam o day");
                     console.log('data: ', data);
                     $('.info_timesheet').show();
+                    $('.range_day').hide();
+
+                    $('.dayofmonth').datepicker({
+                        startView: 0,
+                        minViewMode: 0,
+                        maxViewMode: 2,
+                        multidate: true,
+                        multidateSeparator: "-",
+                        autoClose: true,
+                        beforeShowDay: highlightRange,
+                    }).on("changeDate", function (event) {
+                        var dates = event.dates,
+                            elem = $('.dayofmonth');
+                        if (elem.data("selecteddates") == dates.join(",")) return;
+                        if (dates.length > 2) dates = dates.splice(dates.length - 1);
+                        dates.sort(function (a, b) { return new Date(a).getTime() - new Date(b).getTime() });
+                        elem.data("selecteddates", dates.join(",")).datepicker('setDates', dates);
+                    });
+
+                    function highlightRange(date) {
+                        var selectedDates = $('.dayofmonth').datepicker('getDates');
+                        if (selectedDates.length === 2 && date >= selectedDates[0] && date <= selectedDates[1]) {
+                            return 'highlighted';
+                        }
+                        return '';
+                    }
+
                     $('.users').select2();
                     $.each(data, function (i, item) {
                         if (i === 0) {
@@ -235,7 +288,18 @@
             month = this.value;
         });
 
-
+        $('.btn_full_day_of_month').click(function () {
+            type = 0;
+            $('.full_day_of_month').show();
+            $('.range_day').hide();
+        });
+        $('.btn_range_day').click(function () {
+            type = 1;
+            console.log("btn_range_day");
+            $('.full_day_of_month').hide();
+            $('.range_day').show();
+            
+        });
 
 
     });
@@ -271,6 +335,15 @@
 
 </script>
 <style>
+    .checkbox_timesheet {
+        display: flex;
+        gap: 10px;
+    }
+
+    .highlighted {
+        background-color: #99ccff;
+    }
+
     .tab_loaded {
         margin-top: 10px;
         width: 100%;
