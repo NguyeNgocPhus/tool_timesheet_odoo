@@ -6,14 +6,14 @@
 @model UserModel
 
 <div>
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">HELLO ❤️</h1>
 
     <div class="common">
         <label for="SessionId">Nhập session_id</label>
         <input type="text" name="SessionId" class="SessionId" />
-        <button type="button" class="getUser">Lấy thông tin timesheet  🙇‍♂️ 🙇‍♂️ 🙇‍♂️</button>
+        <button type="button" class="getUser">Lấy thông tin timesheet  🙏🏼 🙏🏼</button>
 
-        
+
         <div class="info_timesheet select_user">
             <h4><b>Thông tin timesheet</b></h4>
             <label>Chọn user</label>
@@ -44,6 +44,7 @@
         <button class="info_timesheet submit_timesheet">👻 Tạo timesheet cho tháng 1👻 </button>
         <div class="tab_loaded">
             <div class="loaded"></div>
+            <div class="percent"></div>
         </div>
         <div class="create_success"></div>
     </div>
@@ -52,7 +53,7 @@
 </div>
 <script type="text/javascript">
     $(function () {
-       
+
         for (let i = 1; i <= 12; i++) {
             $('.months').append($('<option>', {
                 value: i,
@@ -61,7 +62,7 @@
         };
 
         $('.months').on('change', function () {
-       
+
             $('.submit_timesheet').html(` 👻 Tạo timesheet cho tháng ${this.value}👻 `);
 
         });
@@ -76,8 +77,10 @@
         let projectName;
         let task_id;
         let month = 1;
+        // create timesheet
         $('.submit_timesheet').click(function () {
             $('.tab_loaded').show();
+            $('.create_success').html("");
             let description = $('.description').val();
             let sessionId = $('.SessionId').val();
 
@@ -101,23 +104,30 @@
                 success: function (data, status, xhr) {
                     $('.tab_loaded').hide();
                     $('.create_success').html(`
-                        <div>
-                           ${data.successRecord} bản ghi được thêm thành công và ${data.errorRecord} bản ghi lỗi
-                        </div>
-                        <div>
-                           truy cập "https://erp.thgdx.vn/" để kiểm tra dữ liệu
-                        </div>
-                                  <div>
-                               cảm ơn rất nhiều vì đã sử dụng phần mềm
+                            <div>
+                               ${data.successRecord} bản ghi được thêm thành công và ${data.errorRecord} bản ghi lỗi
                             </div>
-                    `);
+                            <div>
+                               truy cập "https://erp.thgdx.vn/" để kiểm tra dữ liệu
+                            </div>
+                                      <div>
+                                   cảm ơn rất nhiều vì đã sử dụng phần mềm
+                                </div>
+                        `);
                 }
             });
 
         });
+
+        // get user by session_id
         $('.getUser').click(function () {
 
             let sessionId = $('.SessionId').val();
+            console.log("sessionId", sessionId);
+            if (sessionId === null || sessionId === undefined || sessionId === "") {
+                alert("vui lòng nhập thông tin session id 💩 💩");
+                return;
+            }
             // configuration websocket
             WebSocketHandle(sessionId);
 
@@ -186,6 +196,8 @@
                 }
             });
         });
+
+        // get project by session_id
         $('.projects').on('change', function () {
             project_id = this.value;
             projectName = $('.projects').find(":selected").text();
@@ -251,6 +263,7 @@
             if (message.command == "loaded") {
                 console.log("onmessage", message);
                 $('.loaded').css("width", `${message.data}%`);
+                $('.percent').html(`loading ${message.data}%`)
             }
 
         };
@@ -278,9 +291,9 @@
     .info_timesheet {
         width: 100%;
         margin-bottom: 3px;
-        display:flex;
-        flex-direction:column;
-        justify-content:start;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
     }
 
     .common {
