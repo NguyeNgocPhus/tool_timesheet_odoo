@@ -103,9 +103,7 @@ namespace auto_checkin.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTimesheetRequest request)
-        {
-
-           
+        {  
             var successRecord = 0;
             var errorRecord = 0;
             var days = new List<string>();
@@ -149,6 +147,7 @@ namespace auto_checkin.Controllers
 
                 try
                 {
+                    // core handle
                     _odooClient = new OdooClient(session_id: request.sessionId);
                     var data = _odooClient.createTimeSheet(request.projectId, request.employeeId, request.taskId, request.description, day);
                     var rawProjects = JsonConvert.DeserializeObject<CreateTimesheetResponse>(data.ToString());

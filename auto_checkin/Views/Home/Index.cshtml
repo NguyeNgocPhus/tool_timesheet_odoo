@@ -11,31 +11,30 @@
     <div class="common">
         <label for="SessionId">Nhập session_id</label>
         <input type="text" name="SessionId" class="SessionId" />
-        <button type="button" class="getUser">Lấy thông tin timesheet  🙏🏼 🙏🏼</button>
+        <button type="button" class="getUser mt-2 text-center">Lấy thông tin timesheet  🙏🏼 🙏🏼</button>
 
 
-        <div class="info_timesheet select_user">
-            <h4><b>Thông tin timesheet</b></h4>
+        <div class="info_timesheet mt-2 select_user">
             <label>Chọn user</label>
             <select class="users">
             </select>
         </div>
-        <div class="info_timesheet select_project">
+        <div class="info_timesheet mt-2 select_project">
             <label>Chọn project</label>
             <select class="projects">
             </select>
         </div>
-        <div class="info_timesheet select_task">
+        <div class="info_timesheet mt-2 select_task">
             <label>Chọn task</label>
             <select class="tasks">
             </select>
         </div>
 
-        <div class="info_timesheet">
+        <div class="info_timesheet mt-2">
             <label>Nhập description</label>
             <input type="text" name="description" class="description" />
         </div>
-        <div class="info_timesheet">
+        <div class="info_timesheet mt-2">
             <div class="checkbox_timesheet">
                 <div class="form-check">
                     <input class="form-check-input btn_full_day_of_month" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
@@ -44,7 +43,7 @@
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input btn_range_day" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+                    <input class="form-check-input btn_range_day" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
                     <label class="form-check-label" for="flexRadioDefault2">
                         Range day
                     </label>
@@ -52,338 +51,26 @@
             </div>
 
         </div>
-        <div class="info_timesheet range_day">
+        <div class="info_timesheet range_day mt-2">
             <label>Chọn khoảng ngày (MM/DD/YYY)</label>
             <input type="text" class="dayofmonth">
         </div>
 
-        <div class="info_timesheet full_day_of_month">
+        <div class="info_timesheet full_day_of_month mt-2">
             <label>Chọn tháng</label>
             <select class="months">
             </select>
         </div>
 
-        <button class="info_timesheet submit_timesheet">👻 Tạo timesheet cho tháng 1👻 </button>
-        <div class="tab_loaded">
+        <button type="button" class="info_timesheet mt-2 submit_timesheet text-center">
+            <div style="margin: auto">
+                👻 Tạo timesheet cho tháng 1👻
+            </div>
+        </button>
+        <div class="tab_loaded mt-2">
             <div class="loaded"></div>
             <div class="percent"></div>
         </div>
         <div class="create_success"></div>
     </div>
-
-
 </div>
-<script type="text/javascript">
-    $(function () {
-
-        for (let i = 1; i <= 12; i++) {
-            $('.months').append($('<option>', {
-                value: i,
-                text: `Tháng ${i}`
-            }));
-        };
-
-        $('.months').on('change', function () {
-
-            $('.submit_timesheet').html(` 👻 Tạo timesheet cho tháng ${this.value}👻 `);
-
-        });
-
-        $('.info_timesheet').hide();
-        $('.tab_loaded').hide();
-        let type = 0;
-        let unit_amount = 8.5;
-        let employee_id;
-        let employeeName;
-        let project_id;
-        let projectName;
-        let task_id;
-        let month = 1;
-        let rangeDay = "";
-        // create timesheet
-        $('.submit_timesheet').click(function () {
-            $('.tab_loaded').show();
-            $('.create_success').html("");
-           
-            let description = $('.description').val();
-            let sessionId = $('.SessionId').val();
-            let rangeDay = $('.dayofmonth').val();
-
-            let data = {
-                type: type,
-                sessionId: sessionId,
-                employeeId: employee_id,
-                employeeName: employeeName,
-                projectId: project_id,
-                projectName: projectName,
-                taskId: task_id,
-                description: description,
-                dateTimesheet: type === 0 ? month : rangeDay
-            };
-            console.log("data: ", data);
-            $.ajax({
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                url: `/home/create`,
-                success: function (data, status, xhr) {
-                    $('.tab_loaded').hide();
-                    $('.create_success').html(`
-                                <div>
-                                   ${data.successRecord} bản ghi được thêm thành công và ${data.errorRecord} bản ghi lỗi
-                                </div>
-                                <div>
-                                   truy cập "https://erp.thgdx.vn/" để kiểm tra dữ liệu
-                                </div>
-                                          <div>
-                                       cảm ơn rất nhiều vì đã sử dụng phần mềm
-                                    </div>
-                            `);
-                }
-            });
-
-        });
-
-        // get user by session_id
-        $('.getUser').click(function () {
-
-            let sessionId = $('.SessionId').val();
-            console.log("sessionId", sessionId);
-            if (sessionId === null || sessionId === undefined || sessionId === "") {
-                alert("vui lòng nhập thông tin session id 💩 💩");
-                return;
-            }
-            // configuration websocket
-            WebSocketHandle(sessionId);
-
-
-            $.ajax({
-                type: 'GET',
-                url: `/home/user?sessionId=${sessionId}`,
-                success: function (data, status, xhr) {
-                    //console.log("du lieu nam o day");
-                    console.log('data: ', data);
-                    $('.info_timesheet').show();
-                    $('.range_day').hide();
-
-                    $('.dayofmonth').datepicker({
-                        startView: 0,
-                        minViewMode: 0,
-                        maxViewMode: 2,
-                        multidate: true,
-                        multidateSeparator: "-",
-                        autoClose: true,
-                        beforeShowDay: highlightRange,
-                    }).on("changeDate", function (event) {
-                        var dates = event.dates,
-                            elem = $('.dayofmonth');
-                        if (elem.data("selecteddates") == dates.join(",")) return;
-                        if (dates.length > 2) dates = dates.splice(dates.length - 1);
-                        dates.sort(function (a, b) { return new Date(a).getTime() - new Date(b).getTime() });
-                        elem.data("selecteddates", dates.join(",")).datepicker('setDates', dates);
-                    });
-
-                    function highlightRange(date) {
-                        var selectedDates = $('.dayofmonth').datepicker('getDates');
-                        if (selectedDates.length === 2 && date >= selectedDates[0] && date <= selectedDates[1]) {
-                            return 'highlighted';
-                        }
-                        return '';
-                    }
-
-                    $('.users').select2();
-                    $.each(data, function (i, item) {
-                        if (i === 0) {
-                            employeeName = item.name;
-                            employee_id = item.id;
-                        }
-                        $('.users').append($('<option>', {
-                            value: item.id,
-                            text: item.name
-                        }));
-                    });
-                }
-            });
-
-            $.ajax({
-                type: 'GET',
-                url: `/home/projects?sessionId=${sessionId}`,
-                success: function (data, status, xhr) {
-                    //console.log("du lieu nam o day");
-                    console.log('data: ', data);
-
-                    $('.select_project').show();
-                    $('.projects').select2();
-                    $.each(data, function (i, item) {
-                        if (i === 0) {
-                            projectName = item.name;
-                            project_id = item.id;
-                            // call api get task
-                            $.ajax({
-                                type: 'GET',
-                                url: `/home/tasks?sessionId=${sessionId}&projectId=${project_id}`,
-                                success: function (data, status, xhr) {
-                                    //console.log("du lieu nam o day");
-                                    console.log('data: ', data);
-                                    $('.select_task').show();
-                                    $('.tasks').select2();
-                                    $('.tasks').html("");
-                                    $.each(data, function (i, item) {
-                                        if (i === 0) {
-                                            task_id = item.id;
-                                        }
-                                        $('.tasks').append($('<option>', {
-                                            value: item.id,
-                                            text: item.name
-                                        }));
-                                    });
-                                }
-                            });
-                        }
-                        $('.projects').append($('<option>', {
-                            value: item.id,
-                            text: item.name
-                        }));
-                    });
-                }
-            });
-        });
-
-        // get project by session_id
-        $('.projects').on('change', function () {
-            project_id = this.value;
-            projectName = $('.projects').find(":selected").text();
-            let sessionId = $('.SessionId').val();
-            $.ajax({
-                type: 'GET',
-                url: `/home/tasks?sessionId=${sessionId}&projectId=${project_id}`,
-                success: function (data, status, xhr) {
-                    //console.log("du lieu nam o day");
-                    console.log('data: ', data);
-                    $('.select_task').show();
-                    $('.tasks').select2();
-                    $('.tasks').html("");
-                    $.each(data, function (i, item) {
-                        if (i === 0) {
-                            task_id = item.id;
-                        }
-                        $('.tasks').append($('<option>', {
-                            value: item.id,
-                            text: item.name
-                        }));
-                    });
-                }
-            });
-        });
-        $('.users').on('change', function () {
-            employee_id = this.value;
-            employeeName = $('.users').find(":selected").text();
-            console.log("employee_id", employeeName)
-        });
-        $('.tasks').on('change', function () {
-            task_id = this.value;
-        });
-        $('.months').on('change', function () {
-            month = this.value;
-        });
-
-        $('.btn_full_day_of_month').click(function () {
-            type = 0;
-            $('.full_day_of_month').show();
-            $('.range_day').hide();
-        });
-        $('.btn_range_day').click(function () {
-            type = 1;
-            console.log("btn_range_day");
-            $('.full_day_of_month').hide();
-            $('.range_day').show();
-            
-        });
-
-
-    });
-    function WebSocketHandle(session_id) {
-        // enable websocket
-        let scheme = document.location.protocol === "https:" ? "wss" : "ws";
-        let port = document.location.port ? (":" + document.location.port) : "";
-
-        let webSocketUrl = scheme + "://" + document.location.hostname + port + "/ws";
-        console.log("webSocketUrl", webSocketUrl);
-        let socket = new WebSocket(webSocketUrl);
-
-        socket.onopen = function (event) {
-            console.log("onopen");
-            socket.send(JSON.stringify({ "command": "subscribe", "identifier": session_id }))
-        };
-        socket.onclose = function (event) {
-            console.log("onclose");
-        };
-        socket.onerror = function (event) {
-            console.log("onerror ");
-        };
-        socket.onmessage = function (event) {
-            let message = JSON.parse(event.data);
-            if (message.command == "loaded") {
-                console.log("onmessage", message);
-                $('.loaded').css("width", `${message.data}%`);
-                $('.percent').html(`loading ${message.data}%`)
-            }
-
-        };
-    }
-
-</script>
-<style>
-    .checkbox_timesheet {
-        display: flex;
-        gap: 10px;
-    }
-
-    .highlighted {
-        background-color: #99ccff;
-    }
-
-    .tab_loaded {
-        margin-top: 10px;
-        width: 100%;
-        height: 10px;
-        border: 1px solid black;
-    }
-
-    .loaded {
-        background-color: blue;
-        height: 100%;
-        width: 0px;
-    }
-
-    .select_user {
-        display: none;
-    }
-
-    .info_timesheet {
-        width: 100%;
-        margin-bottom: 3px;
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-    }
-
-    .common {
-        display: flex;
-        flex-direction: column;
-        width: 300px;
-    }
-
-    .description {
-        width: 100%;
-    }
-
-    select {
-        width: 100%;
-    }
-
-    label {
-        font-weight: bold;
-    }
-</style>
