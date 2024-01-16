@@ -52,13 +52,14 @@
 </div>
 <script type="text/javascript">
     $(function () {
-
+       
         for (let i = 1; i <= 12; i++) {
             $('.months').append($('<option>', {
                 value: i,
                 text: `Tháng ${i}`
             }));
-        }
+        };
+
         $('.months').on('change', function () {
        
             $('.submit_timesheet').html(` 👻 Tạo timesheet cho tháng ${this.value}👻 `);
@@ -155,6 +156,27 @@
                         if (i === 0) {
                             projectName = item.name;
                             project_id = item.id;
+                            // call api get task
+                            $.ajax({
+                                type: 'GET',
+                                url: `/home/tasks?sessionId=${sessionId}&projectId=${project_id}`,
+                                success: function (data, status, xhr) {
+                                    //console.log("du lieu nam o day");
+                                    console.log('data: ', data);
+                                    $('.select_task').show();
+                                    $('.tasks').select2();
+                                    $('.tasks').html("");
+                                    $.each(data, function (i, item) {
+                                        if (i === 0) {
+                                            task_id = item.id;
+                                        }
+                                        $('.tasks').append($('<option>', {
+                                            value: item.id,
+                                            text: item.name
+                                        }));
+                                    });
+                                }
+                            });
                         }
                         $('.projects').append($('<option>', {
                             value: item.id,
