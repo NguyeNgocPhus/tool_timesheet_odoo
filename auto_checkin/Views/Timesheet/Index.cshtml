@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Timesheet";
+}
+
+<div>
+    <h1 class="display-4">HELLO ❤️</h1>
+
+    <div class="common">
+        <label for="SessionId">Nhập session_id</label>
+        <input type="text" name="SessionId" class="SessionId" />
+        <button type="button" class="getUser mt-2 text-center">Lấy thông tin timesheet  🙏🏼 🙏🏼</button>
+
+
+        <div class="info_timesheet mt-2 select_user">
+            <label>Chọn user</label>
+            <select class="users">
+            </select>
+        </div>
+        <div class="info_timesheet mt-2 select_project">
+            <label>Chọn project</label>
+            <select class="projects">
+            </select>
+        </div>
+        <div class="info_timesheet mt-2 select_task">
+            <label>Chọn task</label>
+            <select class="tasks">
+            </select>
+        </div>
+
+        <div class="info_timesheet mt-2">
+            <label>Nhập description</label>
+            <input type="text" name="description" class="description" />
+        </div>
+        <div class="info_timesheet mt-2">
+            <div class="checkbox_timesheet">
+                <div class="form-check">
+                    <input class="form-check-input btn_full_day_of_month" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Full day of month
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input btn_range_day" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Range day
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        <div class="info_timesheet range_day mt-2">
+            <label>Chọn khoảng ngày (MM/DD/YYY)</label>
+            <input type="text" class="dayofmonth">
+        </div>
+
+        <div class="info_timesheet full_day_of_month mt-2">
+            <label>Chọn tháng</label>
+            <select class="months">
+            </select>
+        </div>
+
+        <button type="button" class="info_timesheet mt-2 submit_timesheet text-center">
+            <div style="margin: auto">
+                👻 Tạo timesheet cho tháng 1👻
+            </div>
+        </button>
+        <div class="tab_loaded mt-2">
+            <div class="loaded"></div>
+            <div class="percent"></div>
+        </div>
+        <div class="create_success"></div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/timesheet.js" asp-append-version="true"></script>
+}

@@ -76,7 +76,7 @@
         $.ajax({
             type: 'GET',
             url: `/home/user?sessionId=${sessionId}`,
-            success: function (data, status, xhr) {
+            success: function (data) {
                 //console.log("du lieu nam o day");
                 console.log('data: ', data);
                 $('.info_timesheet').show();
@@ -173,7 +173,7 @@
         $.ajax({
             type: 'GET',
             url: `/home/tasks?sessionId=${sessionId}&projectId=${project_id}`,
-            success: function (data, status, xhr) {
+            success: function (data) {
                 //console.log("du lieu nam o day");
                 console.log('data: ', data);
                 $('.select_task').show();
