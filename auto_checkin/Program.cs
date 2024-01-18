@@ -1,9 +1,14 @@
 using auto_checkin;
+using auto_checkin.Persistances;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
+
+
+#region logger
 builder
     .Host
     .UseSerilog(
@@ -15,8 +20,6 @@ builder
         }
     );
 builder.Logging.ClearProviders();
-
-#region logger
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
     //.MinimumLevel.Verbose()
@@ -24,8 +27,32 @@ var logger = new LoggerConfiguration()
 Log.Logger = logger;
 builder.Logging.AddSerilog(logger);
 #endregion
-
+#region websoket
 builder.Services.AddSingleton<WebsocketHandler>();
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(5)
+};
+
+#endregion
+#region dbcontext
+// dotnet ef migrations add "init" --project auto_checkin --context ApplicationDbContext --startup-project auto_checkin --output-dir Persistances/Migrations
+//dotnet ef database update --project Identity.Infrastructure --startup-project Identity.WebApi --context ApplicationDbContext
+var appDb = builder.Configuration.GetSection("AppDb").Get<AppDbOption>();
+builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(option =>
+{
+    option.UseNpgsql($"Server={appDb.Server};Port={appDb.Port};User Id={appDb.UserName};Password={appDb.Password};Database={appDb.Database}");
+    option.UseLoggerFactory(LoggerFactory.Create(loggingBuilder =>
+    {
+        loggingBuilder.AddSerilog();
+    }
+    ));
+});
+builder.Services.AddScoped<ApplicationDbContext>();
+#endregion
+
+
+
 
 
 // Add services to the container.
@@ -33,10 +60,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromSeconds(5)
-};
 
 app.UseWebSockets(webSocketOptions);
 // Configure the HTTP request pipeline.

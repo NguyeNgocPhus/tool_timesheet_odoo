@@ -1,20 +1,18 @@
 ﻿@model BlogModel
 
 <div>
-    <button id="edit" class="btn btn-primary" onclick="edit()" type="button">Edit 1</button>
+    <button id="edit" class="btn btn-primary mt-" onclick="edit()" type="button">Edit 1</button>
     <button id="save" class="btn btn-primary" onclick="save()" type="button">Save 2</button>
-    <div class="click2edit"></div>
-    <div id="datagrid" >
-        <span>{{message}}- {{title}}</span>
-        <sm-datagrid-pager datasource="xinchao" options="phu"></sm-datagrid-pager>
-    
-        <column></column>
-        <column></column>
-        <column></column>
-        <column></column>
-        <column></column>
+    <div class="row">
+        <div class="col-2 bg-dark">Left</div>
+        <div class="col-8">
+            @Html.Raw(Model.Full)
+        </div>
+        <div class="col-2 bg-info">Right</div>
     </div>
+
+
 </div>
 
-@section Scripts{
+@section Scripts {
 }

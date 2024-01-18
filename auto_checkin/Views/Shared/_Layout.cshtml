@@ -16,13 +16,21 @@
     <script src="summernote-bs5.js"></script> *@
 </head>
 <body>
-
-    <div class="container">
-        <main role="main" class="pb-3">
+    <header class="border-bottom mb-5 position-sticky">
+        <div class="navbar">
+            <div class="container">
+                Nguyễn Ngọc Phú
+            </div>
+        </div>
+    </header>
+    <main role="main">
+        <div class="container">
             @RenderBody()
-        </main>
-    </div>
-    <footer class="border-top footer text-muted">
+
+        </div>
+       
+    </main>
+    <footer class="border-top footer fixed-bottom bg-light">
         <div class="container">
             &copy; code by <b>PHUS</b>. Nhấn vào <a style="text-decoration:none" href="/donate.html"><b>Đây</b></a> để xem hướng dẫn sử dụng. Chúc vui 👌
         </div>
