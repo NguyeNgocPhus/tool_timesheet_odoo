@@ -1,28 +1,20 @@
 ﻿@model BlogModel
 
 <div>
-    <div>hahaha</div>
-    <div id="summernoteEditor"></div>
+    <button id="edit" class="btn btn-primary" onclick="edit()" type="button">Edit 1</button>
+    <button id="save" class="btn btn-primary" onclick="save()" type="button">Save 2</button>
+    <div class="click2edit"></div>
+    <div id="datagrid" >
+        <span>{{message}}- {{title}}</span>
+        <sm-datagrid-pager datasource="xinchao" options="phu"></sm-datagrid-pager>
+    
+        <column></column>
+        <column></column>
+        <column></column>
+        <column></column>
+        <column></column>
+    </div>
 </div>
 
 @section Scripts{
-    <script>
-        // $(document).ready(function () {
-        //     $('#summernoteEditor').summernote({
-        //         placeholder: 'Hello stand alone ui',
-        //         tabsize: 2,
-        //         height: 120,
-        //         toolbar: [
-        //             ['style', ['style']],
-        //             ['font', ['bold', 'underline', 'clear']],
-        //             ['color', ['color']],
-        //             ['para', ['ul', 'ol', 'paragraph']],
-        //             ['table', ['table']],
-        //             ['insert', ['link', 'picture', 'video']],
-        //             ['view', ['fullscreen', 'codeview', 'help']]
-        //         ]
-        //     });
-        // });
-
-    </script>
 }
