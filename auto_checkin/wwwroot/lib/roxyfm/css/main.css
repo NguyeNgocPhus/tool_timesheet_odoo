@@ -1,0 +1,368 @@
+body {
+	background-color: #fff
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0
+}
+
+#wraper {
+	width: 100%;
+	height: 100%
+}
+
+#wraper, #dlgNewDir, #dlgFileProp, #dlgAddFile, #menuDir, #menuFile, #pnlRenameFile, #pnlLoadingDirs, #pnlDirName, #pnlLoading, #pnlEmptyDir, #pnlSearchNoFiles, #pnlFileProp, #pnlDirList ul {
+	display: none
+}
+
+#pnlFileList .selected, #pnlFileList .selected:hover {
+	background-color: #b8d4ed !important
+}
+
+#pnlFileList .icon {
+	float: left;
+	margin-right: 4px
+}
+
+	#pnlFileList .icon > .thumb {
+		display: none
+	}
+
+#pnlFileList li {
+	float: left;
+	padding: 4px 4px 4px 8px;
+	clear: both;
+	width: 99%;
+	cursor: pointer
+}
+
+#pnlFileList .size {
+	float: right;
+	margin-left: 22px;
+	white-space: nowrap
+}
+
+#pnlFileList .time {
+	float: right;
+	margin-left: 22px;
+	width: 130px;
+	white-space: nowrap
+}
+
+#pnlFileList .file-icon {
+	position: relative;
+	opacity: 1
+}
+
+#pnlFileList.thumbView {
+	padding: 3px
+}
+
+	#pnlFileList.thumbView li {
+		float: left !important;
+		clear: none;
+		margin: 3px;
+		overflow: hidden;
+		padding: 10px;
+		text-align: center;
+		vertical-align: middle;
+		border: 1px solid transparent;
+		position: relative
+	}
+
+		#pnlFileList.thumbView li:hover {
+			background-color: #e9ecef
+		}
+
+		#pnlFileList.thumbView li:hover, #pnlFileList.thumbView li.selected {
+			border-color: rgba(0,0,0,0.08)
+		}
+
+		#pnlFileList.thumbView li .file-icon {
+			font-size: 84px
+		}
+
+		#pnlFileList.thumbView li.file-image .file-icon {
+			display: none
+		}
+
+		#pnlFileList.thumbView li.file-image .thumb {
+			display: inline-block
+		}
+
+	#pnlFileList.thumbView .time, #pnlFileList.thumbView .size {
+		display: none
+	}
+
+	#pnlFileList.thumbView .icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 140px;
+		height: 120px;
+		margin: 0;
+		padding: 0;
+		position: relative;
+		float: none
+	}
+
+		#pnlFileList.thumbView .icon > img {
+			max-width: 100%;
+			height: auto
+		}
+
+			#pnlFileList.thumbView .icon > img.thumb {
+				box-shadow: 2px 2px 6px rgba(0,0,0,0.25)
+			}
+
+	#pnlFileList.thumbView .name {
+		display: block !important;
+		font-size: 12px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		position: absolute;
+		left: 4px;
+		right: 4px;
+		bottom: 5px;
+		margin: 0
+	}
+
+.filesize {
+	font-weight: 600;
+	margin-top: 4px;
+	display: inline-block
+}
+
+.pnlDragFile, .pnlDragDir {
+	background: #fff;
+	opacity: 0.8;
+	float: left;
+	width: auto !important;
+	z-index: 999999;
+	position: absolute
+}
+
+#pnlStatus {
+	padding: 5px
+}
+
+.scrollPane {
+	width: 100%;
+	height: 400px;
+	overflow: auto;
+	position: relative
+}
+
+.bottomLine {
+	background: #f8f9fa;
+	border-top: 1px solid rgba(0,0,0,0.12);
+	height: 36px
+}
+
+input[type=text]::-ms-clear {
+	display: none
+}
+
+td.pnlDirs {
+	width: 260px;
+	border-right: 1px solid rgba(0,0,0,0.12)
+}
+
+	td.pnlDirs .scrollPane {
+		width: 260px
+	}
+
+#pnlDirList {
+	position: relative
+}
+
+	#pnlDirList .dir-item {
+		padding: 3px 0.4rem;
+		cursor: pointer;
+		position: relative;
+		float: left;
+		min-width: 100%
+	}
+
+		#pnlDirList .dir-item .dirPlus {
+			font-size: 10px;
+			width: 12px;
+			height: 10px;
+			margin-top: 1px;
+			margin-right: 8px;
+			text-align: center
+		}
+
+		#pnlDirList .dir-item .dir {
+			padding-top: 2px
+		}
+
+		#pnlDirList .dir-item .name {
+			white-space: nowrap;
+			display: block
+		}
+
+		#pnlDirList .dir-item:hover {
+			background-color: #e9ecef
+		}
+
+		#pnlDirList .dir-item.selected, #pnlDirList .dir-item.selected:hover {
+			background-color: #b8d4ed !important
+		}
+
+		#pnlDirList .dir-item.indeterm {
+			background-color: #e9ecef !important
+		}
+
+		#pnlDirList .dir-item.dragover {
+			background-color: #e9ecef !important
+		}
+
+	#pnlDirList ul .dir-item {
+		padding-left: 1.4rem
+	}
+
+	#pnlDirList ul ul .dir-item {
+		padding-left: 2.4rem
+	}
+
+	#pnlDirList ul ul ul .dir-item {
+		padding-left: 3.4rem
+	}
+
+	#pnlDirList ul ul ul ul .dir-item {
+		padding-left: 4.4rem
+	}
+
+	#pnlDirList ul ul ul ul ul .dir-item {
+		padding-left: 5.4rem
+	}
+
+	#pnlDirList ul ul ul ul ul ul .dir-item {
+		padding-left: 6.4rem
+	}
+
+	#pnlDirList ul ul ul ul ul ul ul .dir-item {
+		padding-left: 7.4rem
+	}
+
+	#pnlDirList ul ul ul ul ul ul ul ul .dir-item {
+		padding-left: 8.4rem
+	}
+
+	#pnlDirList ul ul ul ul ul ul ul ul ul .dir-item {
+		padding-left: 9.4rem
+	}
+
+#pnlLoadingDirs {
+	margin-left: 5px
+}
+
+.imgPreview {
+	max-width: 300px
+}
+
+.actions {
+	padding: 3px 0 10px 5px;
+	background-color: #f8f9fa;
+	border-bottom: 1px solid rgba(0,0,0,0.1)
+}
+
+	.actions > .btn-group {
+		padding-right: 5px;
+		margin-right: 5px;
+		border-right: 1px solid rgba(0,0,0,0.12)
+	}
+
+		.actions > .btn-group:last-child {
+			padding-right: 0;
+			margin-right: 0;
+			border-right: none
+		}
+
+#fileUploads {
+	width: 100%
+}
+
+.uploadFilesList {
+	width: 100%;
+	height: 300px;
+	overflow: auto
+}
+
+div.ui-tooltip {
+	max-width: 90%
+}
+
+.uploadFilesList {
+	font-size: 12px
+}
+
+.fileUpload {
+	margin: 8px 0 0 0;
+	position: relative;
+	border: 1px solid #EEE
+}
+
+	.fileUpload .error {
+		font-weight: 600
+	}
+
+.fileName {
+	z-index: 2;
+	line-height: 20px;
+	height: 20px;
+	overflow: hidden;
+	padding: 0 13px 0 5px
+}
+
+.progressPercent {
+	z-index: 2
+}
+
+.stripes {
+	background: url("data:image/gif;base64,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") repeat-x;
+	opacity: 0.40;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	position: relative
+}
+
+.uploadProgress {
+	position: absolute;
+	width: 0;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	background: #d3edff;
+	background: linear-gradient(to bottom, #d3edff 0%, #cbebff 47%, #a1dbff 100%)
+}
+
+.uploadError {
+	background: #ff8787;
+	background: linear-gradient(to bottom, #ff8787 0%, #ffa3a3 45%, #ff5e5e 100%)
+}
+
+.uploadComplete {
+	background: #dbff87;
+	background: linear-gradient(to bottom, #dbff87 0%, #e0f49c 45%, #bddd49 100%)
+}
+
+	.uploadError .stripes, .uploadComplete .stripes {
+		display: none
+	}
+
+.removeUpload {
+	background: url("/lib/roxyfm/images/sprite.png") no-repeat 6px -421px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	width: 20px;
+	cursor: pointer
+}
