@@ -1,6 +1,7 @@
 using auto_checkin;
 using auto_checkin.Persistances;
 using Microsoft.EntityFrameworkCore;
+using PNN.Identity.DependencyInjection.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,8 @@ var webSocketOptions = new WebSocketOptions
 #region dbcontext
 // dotnet ef migrations add "init" --project auto_checkin --context ApplicationDbContext --startup-project auto_checkin --output-dir Persistances/Migrations
 //dotnet ef database update --project Identity.Infrastructure --startup-project Identity.WebApi --context ApplicationDbContext
+
+builder.Services.AddSimpleIdentity(builder.Configuration);
 var appDb = builder.Configuration.GetSection("AppDb").Get<AppDbOption>();
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(option =>
 {
@@ -73,7 +76,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseIdentity();
+
 app.MapControllerRoute(
     name: "MyArea",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

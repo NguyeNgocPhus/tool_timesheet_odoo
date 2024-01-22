@@ -2,6 +2,7 @@
 using auto_checkin.Controllers;
 using auto_checkin.Persistances;
 using Microsoft.AspNetCore.Mvc;
+using PNN.Identity.Securities.Authorization;
 
 namespace auto_checkin.Areas.Admin.Controllers
 {
@@ -37,6 +38,7 @@ namespace auto_checkin.Areas.Admin.Controllers
         }
 
 		[HttpPost]
+        [Permissions]
 		[Route("blog/create")]
 		public async Task<IActionResult> CreateBlog(BlogModel model)
 		{

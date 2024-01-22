@@ -22,6 +22,8 @@ namespace auto_checkin.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var blogs = _db.Blogs.AsQueryable();
+            var expression = blogs.Expression;
             //var a = new Blog()
             //{
             //    Id = Guid.NewGuid(),

@@ -32,16 +32,28 @@
 				placeholder: 'Hello stand alone ui',
 				tabsize: 2,
 				height: 120,
+				codemirror: { // codemirror options
+					'mode': 'text/html',
+					'htmlMode': true,
+					'lineNumbers': true,
+					'theme': 'monokai'
+				
+				},
+				
 				toolbar: [
-					['style', ['style']],
-					['font', ['bold', 'underline', 'clear']],
-					['color', ['color']],
-					['para', ['ul', 'ol', 'paragraph']],
-					['table', ['table']],
-					['insert', ['link', 'picture', 'video']],
-					['view', ['fullscreen', 'codeview', 'help']]
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert', ['link', 'picture', 'video', 'table', 'hr']],
+                    ['code', ['codeview', 'code']],
+                    ['view', ['fullscreen', 'help']]
 				]
 			});
+
 
 		});
    </script>
