@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace auto_checkin
+namespace auto_checkin.Services.Odoo
 {
     public class OdooBaseClient
     {
@@ -22,7 +22,7 @@ namespace auto_checkin
                 }
             }
             builder.Query = query.ToString();
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpClient httpClient = new HttpClient();
             if (header != null)
             {
@@ -37,12 +37,12 @@ namespace auto_checkin
 
         protected string sendHttpPostRequestWithBody(string endpoint, Dictionary<string, dynamic> param, string body, Dictionary<string, string> header)
         {
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-           
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             var cookieContainer = new CookieContainer();
-            var handler = new HttpClientHandler() { CookieContainer = cookieContainer } ;
+            var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             HttpClient httpClient = new HttpClient(handler);
-            
+
             if (header != null)
             {
                 foreach (KeyValuePair<string, string> entry in header)
@@ -53,8 +53,8 @@ namespace auto_checkin
             }
 
             UriBuilder builder = new UriBuilder(endpoint);
-            
-           
+
+
             var query = HttpUtility.ParseQueryString(builder.Query);
             if (param != null)
             {

@@ -1,4 +1,4 @@
-﻿namespace auto_checkin
+﻿namespace auto_checkin.Services.Odoo
 {
     public class APIConfig
     {

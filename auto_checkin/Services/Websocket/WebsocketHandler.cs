@@ -3,7 +3,7 @@ using System;
 using System.Net.WebSockets;
 using System.Text;
 
-namespace auto_checkin
+namespace auto_checkin.Services.Websocket
 {
     public class WebsocketHandler
     {
@@ -25,8 +25,8 @@ namespace auto_checkin
                     var msg_str = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
                     var client_msg = Newtonsoft.Json.JsonConvert.DeserializeObject<WsClientMessage>(msg_str.ToString());
-                    
-                    if(client_msg.command == "subscribe")
+
+                    if (client_msg.command == "subscribe")
                     {
                         _connections.Add(client_msg.identifier, webSocket);
                         //PingClient(client_msg.identifier, webSocket);

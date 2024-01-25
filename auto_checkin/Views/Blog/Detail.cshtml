@@ -1,0 +1,144 @@
+﻿@model BlogModel
+@{
+    var index = 1;
+    var text = "bg-primary";
+}
+<div>
+
+
+
+    <div class="row">
+        <div class="col-2 fixedBox_top">
+            <div class="fixedBox border rounded overflow-hidden ">
+                <div class="bg-primary p-3 text-center text-light">
+                    @Model.Series
+                </div>
+                <div class="p-3">
+                    @foreach (var blog in Model.BlogInSeries)
+                    {
+                        <div class="p-2 rounded overflow-hidden">
+                            @blog
+                        </div>
+
+                    }
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-8">
+
+            <h1>@Model.Title</h1>
+            <div class="d-flex justify-content-start pb-3 mb-4 border-bottom">
+                <div>@Model.CreateTime</div>
+                <div class="ml-3 text-muted"><small>@Model.Comment comment</small></div>
+            </div>
+
+            @Html.Raw(Model.Full)
+
+            <div class="d-flex justify-content-start bg-info bg-gradient p-4 rounded border text-light mb-4">
+                <div>👉</div>
+                <div>Has this been helpful? You can show your appreciation by leaving a "coffee" tip. Thanks!</div>
+            </div>
+            <div class="d-flex justify-content-end mb-4">
+                <div class="rounded border p-2 text-info">Next in React/Redux TodoMVC ➔</div>
+            </div>
+            <div class="d-flex justify-content-between mb-4">
+                <div class="rounded border p-2 text-info">Previous Post ➔</div>
+                <div class="rounded border p-2 text-info">Next Post ➔</div>
+            </div>
+            <div class="d-flex justify-content-start">
+
+                <div class="bg-primary rounded border p-2 text-light">➕ Create comment</div>
+
+            </div>
+            @for (int i = 0; i <= 3; i++)
+            {
+                <div class="comment mt-4">
+                    <div class="d-flex justify-content-between">
+                        <div class="comment-info d-flex">
+                            <img style="width: 90px;height:80px;" class="object-fit-cover" src="~/me.jpg" />
+                            <div class="ml-2">
+                                <span>nguyễn ngọc phú</span>
+                                <div style="font-size: 12px;">20/1/2019</div>
+                            </div>
+                        </div>
+                        <div class="comment-reply">🗨</div>
+
+                    </div>
+                    <div class="comment-text">
+                        <p style="font-size: 12px;">
+                            Rather than a Promise, I think Task is more like a Future.
+                            If you want found a equivalent of Promise in C#, you should consider TaskCompletionSource.
+                        </p>
+
+                    </div>
+                </div>
+            }
+
+
+        </div>
+        <div class="col-2">
+            <div class="border rounded overflow-hidden mb-4">
+                <div class="bg-secondary p-3 text-center">
+
+                    About for me
+                </div>
+                <div class="p-3">
+                    <div>
+                        <img src="~/me.jpg" />
+                    </div>
+                    <div>
+                        Stephen Cleary is a Christian, husband, father, and programmer living in Northern Michigan.
+                    </div>
+
+                </div>
+            </div>
+            <div class="border rounded overflow-hidden mb-4">
+                <div class="bg-primary p-3 text-center text-light">
+                    Popular Posts
+                </div>
+                <div class="p-3">
+                    @foreach (var blog in Model.BlogInSeries)
+                    {
+                        <div class="p-2 rounded overflow-hidden">
+                            @blog
+                        </div>
+
+                    }
+                </div>
+            </div>
+            <div class="border rounded overflow-hidden ">
+                <div class="bg-primary p-3 text-center text-light">
+                    Series
+                </div>
+                <div class="p-3">
+                    @foreach (var blog in Model.BlogInSeries)
+                    {
+                        <div class="p-2 rounded overflow-hidden">
+                            @blog
+                        </div>
+
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<style>
+    .h1 {
+        font-size: 36px;
+    }
+
+
+    .fixedBox {
+        position: sticky;
+        top: 80px;
+    }
+</style>
+@section Scripts {
+
+}

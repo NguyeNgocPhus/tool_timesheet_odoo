@@ -1,12 +1,10 @@
-using auto_checkin;
 using auto_checkin.Persistances;
+using auto_checkin.Services.Websocket;
 using Microsoft.EntityFrameworkCore;
 using PNN.Identity.DependencyInjection.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 
 #region logger
@@ -53,10 +51,6 @@ builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(option =>
 });
 builder.Services.AddScoped<ApplicationDbContext>();
 #endregion
-
-
-
-
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

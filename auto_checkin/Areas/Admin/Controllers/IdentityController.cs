@@ -1,6 +1,8 @@
 ﻿using auto_checkin.Controllers;
 using auto_checkin.Models;
 using auto_checkin.Persistances;
+using auto_checkin.Services.Odoo;
+using auto_checkin.Services.Websocket;
 using Microsoft.AspNetCore.Mvc;
 
 namespace auto_checkin.Areas.Admin.Controllers

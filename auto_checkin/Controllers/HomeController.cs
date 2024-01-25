@@ -1,4 +1,7 @@
-﻿using auto_checkin.Models;
+﻿using auto_checkin.Extensions;
+using auto_checkin.Models;
+using auto_checkin.Services.Odoo;
+using auto_checkin.Services.Websocket;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;

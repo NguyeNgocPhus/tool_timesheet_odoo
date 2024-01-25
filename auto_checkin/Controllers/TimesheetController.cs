@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using auto_checkin.Services.Odoo;
+using auto_checkin.Services.Websocket;
+using Microsoft.AspNetCore.Mvc;
 
 namespace auto_checkin.Controllers
 {

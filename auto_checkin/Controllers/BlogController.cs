@@ -1,6 +1,8 @@
 ﻿using auto_checkin.Models;
 using auto_checkin.Persistances;
 using auto_checkin.Persistances.Entities;
+using auto_checkin.Services.Odoo;
+using auto_checkin.Services.Websocket;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,23 +23,23 @@ namespace auto_checkin.Controllers
         }
 
         public async Task<IActionResult> Index()
+        {            
+           
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> Detail(string blog)
         {
-            var blogs = _db.Blogs.AsQueryable();
-            var expression = blogs.Expression;
-            //var a = new Blog()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Title = "Test blog ",
-            //    Order = 0,
-            //    SerieId = Guid.Parse("dbdba84c-3b2b-48ff-9818-03b0e6f3c4ed"),
-            //    Content = "",
-            //    Slug = "test-blog",
-            //    ShortTitle = "test"
-            //};
-            // _db.Blogs.Add(a);
-            //await _db.SaveChangesAsync();
             var a = await _db.Blogs.FirstOrDefaultAsync();
-            var model = new BlogModel() { Full = a.Content };
+            var model = new BlogModel()
+            {
+                Full = a.Content,
+                Comment = 1,
+                Title = a.Title,
+                Series = "Test series",
+                BlogInSeries = new List<string>() { "Introduction", "Why react? Why redux", "Language and tooling" },
+                CreateTime = $"{a.CreatedTime:dd/MM/yyy}"
+            };
             return View(model);
         }
     }

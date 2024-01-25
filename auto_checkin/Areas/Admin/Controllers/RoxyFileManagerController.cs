@@ -1,5 +1,7 @@
 ﻿using auto_checkin.Controllers;
 using auto_checkin.Persistances;
+using auto_checkin.Services.Odoo;
+using auto_checkin.Services.Websocket;
 using Microsoft.AspNetCore.Mvc;
 using PNN.Identity.Securities.Authorization;
 

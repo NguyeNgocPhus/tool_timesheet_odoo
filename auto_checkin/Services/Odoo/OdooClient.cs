@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace auto_checkin
+namespace auto_checkin.Services.Odoo
 {
     public class OdooClient : OdooBaseClient
     {
@@ -14,8 +14,8 @@ namespace auto_checkin
 
         public OdooClient(string access_token = "", string session_id = "")
         {
-            this.Access_token = access_token;
-            this.Session_id = session_id;
+            Access_token = access_token;
+            Session_id = session_id;
         }
 
         public string Access_token { get => access_token; set => access_token = value; }
@@ -35,7 +35,7 @@ namespace auto_checkin
             //}
             //headers.Add("access_token", this.Access_token);
 
-            if (!String.IsNullOrEmpty(session_id))
+            if (!string.IsNullOrEmpty(session_id))
             {
                 param.Add("session_id", session_id);
             }
@@ -192,10 +192,10 @@ namespace auto_checkin
                 {
                     args = new object[] {
                        new {
-                                date= date,
+                                date,
                                 name= description,
                                 unit_amount=8.5,
-                                employee_id= employee_id,
+                                employee_id,
                                 project_id= projectId,
                                 task_id= taskId
                        }
