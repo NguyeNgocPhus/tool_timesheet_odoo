@@ -1,0 +1,62 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div>
+	<form class="w-50" action="/admin/blog/create" method="post">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+			<input name="password" type="password" class="form-control" id="exampleInputPassword1">
+        </div>
+        <div class="mb-3">
+            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+            <textarea name="content" id="summernoteEditor"></textarea>
+            
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+
+@section Scripts {
+   <script>
+		$(document).ready(function () {
+			
+			$('#summernoteEditor').summernote({
+				placeholder: 'Hello stand alone ui',
+				tabsize: 2,
+				height: 120,
+				codemirror: { // codemirror options
+					'mode': 'text/html',
+					'htmlMode': true,
+					'lineNumbers': true,
+					'theme': 'monokai'		
+				},
+                toolbar: [
+                    ['style', ['style']],
+                    ['mybutton', ['pagesize']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['para', ['ul', 'ol']],
+                    ['height', ['height']],
+                    ['insert', ['link', 'picture', 'video', 'file']],
+                    ['view', ['fullscreen', 'codeview']],
+                    ['help', ['help']]
+                ]
+			});
+
+
+		});
+   </script>
+}
+<style>
+	.note-editable {
+		background-color: white !important;
+
+	}
+</style>

@@ -6,32 +6,36 @@
     <title>@ViewData["Title"] - auto_checkin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/timesheet.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/auto_checkin.styles.css" asp-append-version="true" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    @* 
+    <link href="summernote-bs5.css" rel="stylesheet">
+    <script src="summernote-bs5.js"></script> *@
 </head>
 <body>
-    
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    <footer class="border-top footer text-muted">
+    <header class="border-bottom navbar fixed-top bg-white">
         <div class="container">
-            &copy; code by <b>PHUS</b>. Nhấn vào <a style="text-decoration:none" href="/donate.html"><b>Đây</b></a> để xem hướng dẫn sử dụng. Chúc vui 👌
+            Nguyễn Ngọc Phú
         </div>
-    </footer>
-   
-    @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+    </header>
+    <main role="main" class="mt-3">
+        <div class="container">
+            @RenderBody()
+
+        </div>
+       
+    </main>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/vue/vue.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/componants/datagrid/datagrid.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-<script src="~/js/index.js" type="text/javascript"></script>
 </html>
 

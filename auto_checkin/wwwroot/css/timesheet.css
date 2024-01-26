@@ -1,0 +1,49 @@
+﻿.checkbox_timesheet {
+    display: flex;
+    gap: 10px;
+}
+
+.highlighted {
+    background-color: #99ccff;
+}
+
+.tab_loaded {
+    margin-top: 10px;
+    width: 100%;
+    height: 10px;
+    border: 1px solid black;
+}
+
+.loaded {
+    background-color: blue;
+    height: 100%;
+    width: 0px;
+}
+
+.select_user {
+    display: none;
+}
+
+.info_timesheet {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.common {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.description {
+    width: 100%;
+}
+
+select {
+    width: 100%;
+}
+
+label {
+    font-weight: bold;
+}
